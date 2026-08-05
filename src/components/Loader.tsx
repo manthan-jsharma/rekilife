@@ -99,7 +99,7 @@ export default function Loader({ onComplete }: LoaderProps) {
       {/* Typewriter */}
       <div
         style={{
-          fontFamily: "'JetBrains Mono', 'Courier New', monospace",
+          fontFamily: "'IBM Plex Mono', 'Courier New', monospace",
           fontSize: "clamp(2rem, 8vw, 3.5rem)",
           fontWeight: 500,
           letterSpacing: "0.15em",
@@ -133,7 +133,7 @@ export default function Loader({ onComplete }: LoaderProps) {
           fontSize: 12,
           letterSpacing: "0.3em",
           textTransform: "uppercase",
-          fontFamily: "'JetBrains Mono', monospace",
+          fontFamily: "'IBM Plex Mono', monospace",
           opacity: showSub ? 1 : 0,
           transition: "opacity 0.6s ease",
         }}

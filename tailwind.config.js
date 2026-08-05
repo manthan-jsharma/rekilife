@@ -14,12 +14,17 @@ module.exports = {
         accent:  "#6c63ff",
         "accent-light": "#a78bfa",
         "accent-glow":  "#c4b5fd",
+        cream:   "#faf7f2",
+        sage:    "#7bae7f",
+        honey:   "#e8a849",
+        coral:   "#e8734a",
         muted:   "#6b7280",
         subtle:  "#374151",
       },
       fontFamily: {
-        mono: ["'Courier New'", "Courier", "monospace"],
-        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        display: ["Cormorant Garamond", "Georgia", "serif"],
+        body: ["Plus Jakarta Sans", "system-ui", "sans-serif"],
+        mono: ["IBM Plex Mono", "Courier New", "monospace"],
       },
       keyframes: {
         blink: {

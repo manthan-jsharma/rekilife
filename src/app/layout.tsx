@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import "../styles/globals.css";
 
 export const metadata: Metadata = {
-  title: "reki.life — Coming Soon",
+  title: "reki.life — Play Smarter. Play Together.",
   description:
-    "Something beautiful is being crafted. reki.life is under construction.",
+    "Premium physical games for curious minds. Puzzles, smart chess, and intuitive games for kids — powered by intelligent ecommerce.",
   openGraph: {
-    title: "reki.life — Coming Soon",
-    description: "Something beautiful is being crafted.",
+    title: "reki.life — Play Smarter. Play Together.",
+    description:
+      "Premium physical games for curious minds. Puzzles, smart chess, and intuitive games for kids.",
     url: "https://reki.life",
     siteName: "reki.life",
     type: "website",
