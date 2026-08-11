@@ -603,6 +603,60 @@ body {
   animation: wooden-hand-breathe 3s ease-in-out infinite;
 }
 
+/* Sparkle burst before solid hand appears (intro only) */
+.wooden-hand-sparkle {
+  pointer-events: none;
+}
+
+.wooden-hand-spark {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff8e8 0%, #e7af6e 45%, transparent 72%);
+  box-shadow: 0 0 10px rgba(231, 175, 110, 0.65);
+  animation: wooden-spark-pop 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  opacity: 0;
+}
+
+.wooden-hand-spark-star {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  opacity: 0;
+  background: linear-gradient(135deg, transparent 40%, #f5d9a8 40%, #f5d9a8 60%, transparent 60%),
+    linear-gradient(45deg, transparent 40%, #e7af6e 40%, #e7af6e 60%, transparent 60%);
+  animation: wooden-spark-star 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes wooden-spark-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0) translateY(4px);
+  }
+  35% {
+    opacity: 1;
+    transform: scale(1.35) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.15) translateY(-10px);
+  }
+}
+
+@keyframes wooden-spark-star {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.1) rotate(22deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.2) rotate(45deg);
+  }
+}
+
 /* Wood-tone shimmer while next/image optimizes on Vercel */
 @keyframes reki-image-shimmer {
   0% {
@@ -639,6 +693,8 @@ body {
   .wooden-hand-line,
   .wooden-hand-glow,
   .wooden-hand-float,
+  .wooden-hand-spark,
+  .wooden-hand-spark-star,
   .reki-image-shimmer {
     animation: none !important;
     stroke-dashoffset: 0;

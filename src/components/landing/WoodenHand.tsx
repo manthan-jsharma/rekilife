@@ -3,28 +3,65 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import WoodenHandLines from "./WoodenHandLines";
+import WoodenHandSparkle from "./WoodenHandSparkle";
 
-/** Line draw plays every reload; PNG waits until intro finishes (even if cached). */
 const LINE_INTRO_MS = 1700;
+const SPARKLE_MS = 950;
+const HAND_SRC = "/illustrations/wooden-adult-hand.png";
+
+type Phase = "lines" | "sparkle" | "done";
+
+function isHandCached(): boolean {
+  const probe = document.createElement("img");
+  probe.src = HAND_SRC;
+  return probe.complete && probe.naturalWidth > 0;
+}
 
 export default function WoodenHand() {
-  const [introKey] = useState(() => Date.now());
+  const [mounted, setMounted] = useState(false);
+  const [introKey, setIntroKey] = useState(0);
+  const [playIntro, setPlayIntro] = useState(false);
+  const [phase, setPhase] = useState<Phase>("done");
   const [pngReady, setPngReady] = useState(false);
-  const [introDone, setIntroDone] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
 
+  // Client-only: decide intro vs instant hand (avoids hydration mismatch)
   useEffect(() => {
-    const t = window.setTimeout(() => setIntroDone(true), LINE_INTRO_MS);
-    return () => clearTimeout(t);
+    const cached = isHandCached();
+    if (cached) {
+      setPlayIntro(false);
+      setPhase("done");
+      setPngReady(true);
+    } else {
+      setIntroKey(Date.now());
+      setPlayIntro(true);
+      setPhase("lines");
+    }
+    setMounted(true);
   }, []);
 
-  // Cached PNG on normal reload can load before onLoad wires up
   useEffect(() => {
+    if (!mounted || !playIntro) return;
+
+    const toSparkle = window.setTimeout(() => setPhase("sparkle"), LINE_INTRO_MS);
+    const toDone = window.setTimeout(() => setPhase("done"), LINE_INTRO_MS + SPARKLE_MS);
+
+    return () => {
+      clearTimeout(toSparkle);
+      clearTimeout(toDone);
+    };
+  }, [mounted, playIntro]);
+
+  useEffect(() => {
+    if (!mounted) return;
     const img = imgRef.current;
     if (img?.complete && img.naturalWidth > 0) setPngReady(true);
-  }, []);
+  }, [mounted]);
 
-  const showPng = pngReady && introDone;
+  const showLines = mounted && playIntro && phase === "lines";
+  const showSparkle = mounted && playIntro && phase === "sparkle";
+  const showHand =
+    mounted && (!playIntro || phase === "sparkle" || phase === "done");
 
   return (
     <div
@@ -40,28 +77,33 @@ export default function WoodenHand() {
           }}
         />
 
+        {showLines && (
+          <div className="absolute inset-0">
+            <WoodenHandLines
+              key={introKey}
+              className="h-full w-full object-contain object-right"
+            />
+          </div>
+        )}
+
         <div
-          className="absolute inset-0 transition-opacity duration-500 ease-out"
-          style={{ opacity: showPng ? 0 : 1 }}
+          className={`absolute inset-0 transition-opacity duration-700 ease-out ${
+            showHand && pngReady ? "opacity-100" : "opacity-0"
+          }`}
         >
-          <WoodenHandLines
-            key={introKey}
-            className="h-full w-full object-contain object-right"
+          <Image
+            ref={imgRef}
+            src={HAND_SRC}
+            alt=""
+            fill
+            sizes="(max-width: 1280px) 340px, 400px"
+            priority
+            className="relative object-contain object-right drop-shadow-[0_10px_24px_rgba(92,58,18,0.18)]"
+            onLoad={() => setPngReady(true)}
           />
         </div>
 
-        <Image
-          ref={imgRef}
-          src="/illustrations/wooden-adult-hand.png"
-          alt=""
-          fill
-          sizes="(max-width: 1280px) 340px, 400px"
-          priority
-          className={`relative object-contain object-right drop-shadow-[0_10px_24px_rgba(92,58,18,0.18)] transition-opacity duration-500 ease-out ${
-            showPng ? "opacity-100" : "opacity-0"
-          }`}
-          onLoad={() => setPngReady(true)}
-        />
+        <WoodenHandSparkle active={showSparkle} />
       </div>
     </div>
   );

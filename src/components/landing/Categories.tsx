@@ -262,10 +262,10 @@ function StickerCard({
   return (
     <a
       href={s.href}
-      className="group flex w-[100px] shrink-0 flex-col items-center gap-3 md:w-[110px]"
+      className="group flex w-[92px] shrink-0 flex-col items-center gap-2.5 md:w-[100px]"
     >
       <div
-        className="flex h-[88px] w-[88px] items-center justify-center rounded-2xl md:h-[96px] md:w-[96px]"
+        className="flex h-[80px] w-[80px] items-center justify-center rounded-2xl md:h-[88px] md:w-[88px]"
         style={{
           background: s.bg,
           border: "4px solid #fff",
@@ -351,7 +351,7 @@ export default function Categories() {
       }}
     >
       <div className="mx-auto max-w-[1200px]">
-        <div className="reki-panel-gradient rounded-xl py-8 md:py-10">
+        <div className="reki-panel-gradient mx-auto max-w-[860px] rounded-xl py-7 md:py-9">
           <div className="reki-panel-rule-top" aria-hidden />
           <div className="reki-panel-rule-bottom" aria-hidden />
 
@@ -362,10 +362,10 @@ export default function Categories() {
             Browse by play style
           </p>
 
-          <div className="overflow-hidden">
+          <div className="overflow-hidden px-1 md:px-2">
             <div
               ref={trackRef}
-              className="flex w-max items-start gap-10 px-6 md:gap-14 md:px-8"
+              className="flex w-max items-start gap-7 px-3 md:gap-8 md:px-4"
               style={{ willChange: "transform" }}
             >
               {loop.map((s, i) => (
