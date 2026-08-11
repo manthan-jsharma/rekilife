@@ -11,164 +11,129 @@ const reasons = [
     number: "01",
     title: "Screen-free play",
     description:
-      "In a world of endless screens, Reki brings back the joy of tactile, hands-on play that builds real skills.",
-    accent: "var(--sage)",
+      "In a world of endless screens, Reki brings back tactile, hands-on play that builds real skills.",
   },
   {
     number: "02",
     title: "Built to last",
     description:
-      "Premium materials, thoughtful design, and quality you can feel. These aren't disposable toys — they're heirlooms.",
-    accent: "var(--honey)",
+      "Premium wood, thoughtful design, and quality you can feel. Not disposable toys — heirlooms.",
   },
   {
     number: "03",
     title: "Grows with your child",
     description:
-      "Adaptive difficulty, age-appropriate challenges, and games that evolve as your child's abilities develop.",
-    accent: "var(--accent-light)",
+      "Age-appropriate challenges that evolve as your child’s abilities develop.",
   },
 ];
 
 export default function WhyReki() {
   const sectionRef = useRef<HTMLElement>(null);
   const counterRef = useRef<HTMLSpanElement>(null);
-  const itemsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
-    if (!section) return;
+    if (!section || !counterRef.current) return;
 
-    const ctx = gsap.context(() => {
-      if (counterRef.current) {
-        const obj = { val: 0 };
-        gsap.to(obj, {
-          val: 500,
-          duration: 2,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: section,
-            start: "top 70%",
-            once: true,
-          },
-          onUpdate: () => {
-            if (counterRef.current) {
-              counterRef.current.textContent = Math.round(obj.val).toString();
-            }
-          },
-        });
-      }
+    const obj = { val: 0 };
+    const tween = gsap.to(obj, {
+      val: 500,
+      duration: 1.8,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: section,
+        start: "top 75%",
+        once: true,
+      },
+      onUpdate: () => {
+        if (counterRef.current) {
+          counterRef.current.textContent = Math.round(obj.val).toString();
+        }
+      },
+    });
 
-      const items = itemsRef.current?.querySelectorAll(".reason-item");
-      if (items?.length) {
-        gsap.from(items, {
-          x: -30,
-          opacity: 0,
-          stagger: 0.12,
-          duration: 0.7,
-          ease: "power3.out",
-          immediateRender: false,
-          scrollTrigger: {
-            trigger: itemsRef.current,
-            start: "top 80%",
-            once: true,
-          },
-        });
-      }
-    }, section);
-
-    return () => ctx.revert();
+    return () => {
+      tween.kill();
+    };
   }, []);
 
   return (
     <section
       id="why"
       ref={sectionRef}
-      className="relative px-6 py-32"
+      className="px-5 py-16 md:px-8 md:py-24"
       style={{ background: "var(--bg)" }}
     >
-      <div className="mx-auto grid max-w-7xl grid-cols-1 items-start gap-20 lg:grid-cols-2">
-        {/* Left — sticky heading */}
-        <div className="lg:sticky lg:top-32">
-          <span
-            className="font-body text-[11px] uppercase tracking-[0.25em]"
-            style={{ color: "var(--accent-light)" }}
+      <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-2 lg:gap-20">
+        <div>
+          <p
+            className="font-body text-[11px] font-semibold uppercase tracking-[0.22em]"
+            style={{ color: "var(--accent)" }}
           >
             Why Reki
-          </span>
-          <h2 className="font-display mt-3 text-[clamp(2rem,5vw,3.5rem)] font-bold leading-tight tracking-tight">
-            More than
+          </p>
+          <h2
+            className="font-display mt-3 font-semibold leading-tight"
+            style={{ color: "var(--text)", fontSize: "clamp(2rem, 4vw, 3.2rem)" }}
+          >
+            We choose wood —
             <br />
-            just games
+            <span className="italic" style={{ color: "var(--accent)" }}>
+              for little hands and big dreams.
+            </span>
           </h2>
           <p
-            className="font-body mt-4 max-w-md text-base leading-relaxed"
-            style={{ color: "var(--muted)" }}
+            className="font-body mt-5 max-w-md text-base leading-relaxed"
+            style={{ color: "var(--text-muted)" }}
           >
-            We believe the best learning happens when children don&apos;t realize
-            they&apos;re learning. Every Reki game is designed with child
-            development experts.
+            In a world of plastic and batteries, Reki offers an eco-conscious
+            alternative: physical games that benefit both children and the
+            planet. Safe, lasting, and designed for open-ended play.
           </p>
 
-          <div className="mt-10 flex items-baseline gap-3">
+          <div className="mt-8 flex items-baseline gap-2">
             <span
               ref={counterRef}
-              className="font-display text-5xl font-bold"
-              style={{ color: "var(--accent-light)" }}
+              className="font-display text-5xl font-semibold"
+              style={{ color: "var(--accent)" }}
             >
               0
             </span>
-            <span className="font-body text-sm" style={{ color: "var(--muted)" }}>
-              + families on the waitlist
+            <span className="font-body text-sm" style={{ color: "var(--text-muted)" }}>
+              + families exploring Reki
             </span>
           </div>
         </div>
 
-        {/* Right — numbered editorial list */}
-        <div ref={itemsRef}>
+        <div>
           {reasons.map((reason, i) => (
             <div
               key={reason.number}
-              className="reason-item group relative py-10"
+              className="py-7"
               style={{
                 borderTop: i === 0 ? "1px solid var(--border)" : undefined,
                 borderBottom: "1px solid var(--border)",
               }}
             >
-              <div className="flex items-start gap-8">
+              <div className="flex gap-5">
                 <span
-                  className="font-display text-4xl font-bold leading-none transition-colors duration-300 group-hover:opacity-100"
-                  style={{ color: reason.accent, opacity: 0.5 }}
+                  className="font-display text-3xl font-semibold leading-none"
+                  style={{ color: "var(--accent)", opacity: 0.4 }}
                 >
                   {reason.number}
                 </span>
-
-                <div className="flex-1">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-display text-xl font-bold md:text-2xl">
-                      {reason.title}
-                    </h3>
-                    <span
-                      className="font-body text-lg transition-transform duration-300 group-hover:translate-x-1"
-                      style={{ color: reason.accent, opacity: 0.6 }}
-                    >
-                      →
-                    </span>
-                  </div>
+                <div>
+                  <h3 className="font-display text-xl font-semibold" style={{ color: "var(--text)" }}>
+                    {reason.title}
+                  </h3>
                   <p
-                    className="font-body mt-3 max-w-md text-sm leading-relaxed"
-                    style={{ color: "var(--muted)" }}
+                    className="font-body mt-2 text-sm leading-relaxed"
+                    style={{ color: "var(--text-muted)" }}
                   >
                     {reason.description}
                   </p>
                 </div>
               </div>
-
-              {/* Expanding accent line on hover */}
-              <div
-                className="absolute bottom-0 left-0 h-[2px] w-0 transition-all duration-500 group-hover:w-full"
-                style={{ background: reason.accent }}
-              />
             </div>
           ))}
         </div>

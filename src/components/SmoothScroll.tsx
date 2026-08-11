@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -12,18 +12,24 @@ interface Props {
 }
 
 export default function SmoothScroll({ children }: Props) {
-  const lenisRef = useRef<Lenis | null>(null);
-
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 1.05,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
+      overscroll: false,
+      infinite: false,
+      anchors: true,
     });
 
-    lenisRef.current = lenis;
-
-    lenis.on("scroll", ScrollTrigger.update);
+    const onScroll = () => {
+      ScrollTrigger.update();
+      const limit = lenis.limit;
+      if (limit > 0 && lenis.scroll > limit) {
+        lenis.scrollTo(limit, { immediate: true });
+      }
+    };
+    lenis.on("scroll", onScroll);
 
     const tickerCallback = (time: number) => {
       lenis.raf(time * 1000);
@@ -32,8 +38,10 @@ export default function SmoothScroll({ children }: Props) {
     gsap.ticker.add(tickerCallback);
     gsap.ticker.lagSmoothing(0);
 
-    // Refresh ScrollTrigger once Lenis is active and layout is settled
-    const refresh = () => ScrollTrigger.refresh();
+    const refresh = () => {
+      lenis.resize();
+      ScrollTrigger.refresh();
+    };
     requestAnimationFrame(refresh);
     window.addEventListener("load", refresh);
     window.addEventListener("resize", refresh);
@@ -42,8 +50,8 @@ export default function SmoothScroll({ children }: Props) {
       window.removeEventListener("load", refresh);
       window.removeEventListener("resize", refresh);
       gsap.ticker.remove(tickerCallback);
+      lenis.off("scroll", onScroll);
       lenis.destroy();
-      ScrollTrigger.getAll().forEach((t) => t.kill());
     };
   }, []);
 

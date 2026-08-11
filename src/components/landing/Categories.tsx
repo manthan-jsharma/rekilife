@@ -2,197 +2,377 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger);
+type StickerId = "puzzles" | "chess" | "memory" | "blocks" | "intuitive" | "strategy";
 
-const categories = [
-  {
-    id: "puzzles",
-    number: "01",
-    title: "Puzzles",
-    subtitle: "Pieces that teach patience",
-    description:
-      "From first jigsaws to brain-bending 3D challenges. Every piece crafted for little hands and big imaginations.",
-    accent: "var(--sage)",
-  },
-  {
-    id: "chess",
-    number: "02",
-    title: "Smart Chess",
-    subtitle: "Strategy meets intuition",
-    description:
-      "Magnetic boards, guided learning pieces, and games that adapt to your child's level. Chess reimagined for young strategists.",
-    accent: "var(--accent-light)",
-  },
-  {
-    id: "intuitive",
-    number: "03",
-    title: "Intuitive Games",
-    subtitle: "Learn by playing",
-    description:
-      "Logic games, pattern builders, and tactile challenges designed to develop critical thinking without a screen in sight.",
-    accent: "var(--honey)",
-  },
+type Sticker = {
+  id: StickerId;
+  label: string;
+  href: string;
+  bg: string;
+};
+
+const stickers: Sticker[] = [
+  { id: "puzzles", label: "PUZZLES", href: "#collections", bg: "#f3e2c6" },
+  { id: "chess", label: "SMART CHESS", href: "#collections", bg: "#dce8e8" },
+  { id: "memory", label: "MEMORY", href: "#collections", bg: "#f6e4d8" },
+  { id: "blocks", label: "LOGIC BLOCKS", href: "#collections", bg: "#e8f0e4" },
+  { id: "intuitive", label: "INTUITIVE", href: "#collections", bg: "#efe6f4" },
+  { id: "strategy", label: "STRATEGY", href: "#collections", bg: "#f5ecd8" },
 ];
 
-function CategorySlide({
-  cat,
+function CategoryIcon({ id }: { id: StickerId }) {
+  switch (id) {
+    case "puzzles":
+      return (
+        <svg width="56" height="56" viewBox="0 0 56 56" fill="none" className="cat-icon-svg">
+          <rect className="cat-puzzle-piece" data-ox="6" data-oy="6" x="6" y="6" width="20" height="20" rx="4" fill="#6b7a4a" />
+          <rect className="cat-puzzle-piece" data-ox="30" data-oy="6" x="30" y="6" width="20" height="20" rx="4" fill="#c45c4a" />
+          <rect className="cat-puzzle-piece" data-ox="6" data-oy="30" x="6" y="30" width="20" height="20" rx="4" fill="#b9772c" />
+          <rect className="cat-puzzle-piece" data-ox="30" data-oy="30" x="30" y="30" width="20" height="20" rx="4" fill="#c4a35a" />
+        </svg>
+      );
+    case "chess":
+      return (
+        <svg width="56" height="56" viewBox="0 0 56 56" fill="none" className="cat-icon-svg">
+          <g className="cat-chess-base">
+            <rect x="16" y="36" width="24" height="5" rx="2" fill="#b9772c" />
+            <rect x="13" y="41" width="30" height="6" rx="2" fill="#8a5a20" />
+          </g>
+          <path
+            className="cat-chess-pawn"
+            d="M28 8c-5 0-9 4-9 9 0 4 2.5 7 6 8.5V32h-5v4h16v-4h-5v-6.5c3.5-1.5 6-4.5 6-8.5 0-5-4-9-9-9z"
+            fill="#9a6524"
+          />
+        </svg>
+      );
+    case "memory":
+      return (
+        <svg width="56" height="56" viewBox="0 0 56 56" fill="none" className="cat-icon-svg">
+          <circle cx="28" cy="28" r="18" fill="#e9c496" stroke="#1a1a1a" strokeWidth="1.5" />
+          <circle className="cat-memory-dot" cx="20" cy="24" r="3" fill="#c45c4a" />
+          <circle className="cat-memory-dot" cx="28" cy="20" r="3" fill="#b9772c" />
+          <circle className="cat-memory-dot" cx="36" cy="24" r="3" fill="#6b7a4a" />
+          <circle className="cat-memory-dot" cx="22" cy="32" r="3" fill="#c4a35a" />
+          <circle className="cat-memory-dot" cx="34" cy="32" r="3" fill="#9a6524" />
+        </svg>
+      );
+    case "blocks":
+      return (
+        <svg width="56" height="56" viewBox="0 0 56 56" fill="none" className="cat-icon-svg">
+          <rect className="cat-block" data-oy="28" x="10" y="28" width="16" height="16" rx="2" fill="#6b7a4a" stroke="#1a1a1a" strokeWidth="1" />
+          <rect className="cat-block" data-oy="16" x="22" y="16" width="16" height="16" rx="2" fill="#c4a35a" stroke="#1a1a1a" strokeWidth="1" />
+          <rect className="cat-block" data-oy="30" x="30" y="30" width="16" height="16" rx="2" fill="#b9772c" stroke="#1a1a1a" strokeWidth="1" />
+        </svg>
+      );
+    case "intuitive":
+      return (
+        <svg width="56" height="56" viewBox="0 0 56 56" fill="none" className="cat-icon-svg">
+          <circle cx="28" cy="28" r="18" fill="#d4c4e8" stroke="#1a1a1a" strokeWidth="1.5" />
+          <g className="cat-clock-hand" style={{ transformOrigin: "28px 28px" }}>
+            <path d="M28 16v12l8 4" stroke="#9a6524" strokeWidth="2.5" strokeLinecap="round" />
+          </g>
+          <circle cx="28" cy="28" r="3" fill="#c45c4a" />
+        </svg>
+      );
+    case "strategy":
+      return (
+        <svg width="56" height="56" viewBox="0 0 56 56" fill="none" className="cat-icon-svg">
+          <path
+            className="cat-star"
+            d="M28 10l4 10h10l-8 6 3 10-9-6-9 6 3-10-8-6h10z"
+            fill="#c4a35a"
+            stroke="#1a1a1a"
+            strokeWidth="1.2"
+            style={{ transformOrigin: "28px 28px" }}
+          />
+          <circle className="cat-sparkle" cx="14" cy="18" r="2" fill="#fcd39f" opacity="0" />
+          <circle className="cat-sparkle" cx="42" cy="16" r="1.8" fill="#fff6e8" opacity="0" />
+          <circle className="cat-sparkle" cx="44" cy="34" r="2.2" fill="#fcd39f" opacity="0" />
+          <circle className="cat-sparkle" cx="12" cy="36" r="1.6" fill="#fff6e8" opacity="0" />
+          <path className="cat-sparkle" d="M8 12l1.5 3 3 1.5-3 1.5-1.5 3-1.5-3-3-1.5 3-1.5z" fill="#fcd39f" opacity="0" />
+          <path className="cat-sparkle" d="M46 42l1 2 2 1-2 1-1 2-1-2-2-1 2-1z" fill="#fff6e8" opacity="0" />
+        </svg>
+      );
+  }
+}
+
+function runThematicLoop(root: HTMLElement, id: StickerId): gsap.core.Animation {
+  switch (id) {
+    case "puzzles": {
+      const pieces = root.querySelectorAll(".cat-puzzle-piece");
+      const tl = gsap.timeline({ repeat: -1, repeatDelay: 1.2 });
+      pieces.forEach((piece, i) => {
+        const el = piece as SVGRectElement;
+        const ox = Number(el.dataset.ox ?? el.getAttribute("x"));
+        const oy = Number(el.dataset.oy ?? el.getAttribute("y"));
+        const offsets = [
+          { x: -10, y: -8 },
+          { x: 10, y: -8 },
+          { x: -10, y: 10 },
+          { x: 10, y: 10 },
+        ];
+        const off = offsets[i] ?? { x: 0, y: 0 };
+        tl.set(el, { attr: { x: ox + off.x, y: oy + off.y }, opacity: 0.35 }, 0);
+        tl.to(
+          el,
+          {
+            attr: { x: ox, y: oy },
+            opacity: 1,
+            duration: 0.5,
+            ease: "back.out(2.2)",
+          },
+          0.15 + i * 0.1,
+        );
+      });
+      return tl;
+    }
+
+    case "chess": {
+      const pawn = root.querySelector(".cat-chess-pawn");
+      const tl = gsap.timeline({ repeat: -1, repeatDelay: 1 });
+      if (pawn) {
+        tl.to(pawn, { y: -7, duration: 0.35, ease: "power2.out" })
+          .to(pawn, { y: 0, duration: 0.45, ease: "bounce.out" })
+          .to(pawn, { y: -3, duration: 0.2, ease: "power2.out" })
+          .to(pawn, { y: 0, duration: 0.3, ease: "power2.in" });
+      }
+      return tl;
+    }
+
+    case "memory": {
+      const dots = root.querySelectorAll(".cat-memory-dot");
+      const tl = gsap.timeline({ repeat: -1, repeatDelay: 0.8 });
+      dots.forEach((dot, i) => {
+        tl.to(
+          dot,
+          {
+            scaleY: 0.15,
+            opacity: 0.35,
+            duration: 0.18,
+            ease: "power2.in",
+            transformOrigin: "center center",
+          },
+          i * 0.12,
+        ).to(
+          dot,
+          {
+            scaleY: 1,
+            opacity: 1,
+            duration: 0.32,
+            ease: "back.out(3)",
+            transformOrigin: "center center",
+          },
+          i * 0.12 + 0.18,
+        );
+      });
+      return tl;
+    }
+
+    case "blocks": {
+      const blocks = root.querySelectorAll(".cat-block");
+      const tl = gsap.timeline({ repeat: -1, repeatDelay: 0.9 });
+      blocks.forEach((block, i) => {
+        const el = block as SVGRectElement;
+        const oy = Number(el.dataset.oy ?? el.getAttribute("y"));
+        tl.to(
+          el,
+          {
+            attr: { y: oy + 24 },
+            duration: 0.32,
+            ease: "power3.in",
+          },
+          i * 0.14,
+        ).to(
+          el,
+          {
+            attr: { y: oy },
+            duration: 0.55,
+            ease: "bounce.out",
+          },
+          i * 0.14 + 0.32,
+        );
+      });
+      return tl;
+    }
+
+    case "intuitive": {
+      const hand = root.querySelector(".cat-clock-hand");
+      const tl = gsap.timeline({ repeat: -1, repeatDelay: 0.6 });
+      if (hand) {
+        tl.to(hand, { rotation: 28, duration: 0.45, ease: "power2.out", transformOrigin: "28px 28px" })
+          .to(hand, { rotation: 0, duration: 0.55, ease: "back.out(2)" });
+      }
+      return tl;
+    }
+
+    case "strategy": {
+      const star = root.querySelector(".cat-star");
+      const sparkles = root.querySelectorAll(".cat-sparkle");
+      sparkles.forEach((s) => gsap.set(s, { opacity: 0, scale: 0, transformOrigin: "center center" }));
+      const tl = gsap.timeline({ repeat: -1, repeatDelay: 0.5 });
+      if (star) {
+        tl.to(star, {
+          scaleX: 1.18,
+          scaleY: 0.78,
+          duration: 0.22,
+          ease: "power2.out",
+          transformOrigin: "28px 28px",
+        })
+          .to(star, {
+            scaleX: 0.9,
+            scaleY: 1.14,
+            duration: 0.24,
+            ease: "power2.inOut",
+            transformOrigin: "28px 28px",
+          })
+          .to(star, {
+            scaleX: 1,
+            scaleY: 1,
+            duration: 0.45,
+            ease: "elastic.out(1.4)",
+            transformOrigin: "28px 28px",
+          });
+      }
+      sparkles.forEach((s, i) => {
+        gsap.to(s, {
+          opacity: 1,
+          scale: 1.5,
+          duration: 0.3,
+          ease: "power2.out",
+          yoyo: true,
+          repeat: -1,
+          repeatDelay: 1.5,
+          delay: i * 0.11,
+          transformOrigin: "center center",
+        });
+      });
+      return tl;
+    }
+  }
+}
+
+function StickerCard({
+  s,
+  iconRef,
 }: {
-  cat: (typeof categories)[0];
+  s: Sticker;
+  iconRef: (el: HTMLDivElement | null) => void;
 }) {
   return (
-    <div className="category-slide absolute inset-0 flex items-center justify-center px-6">
-      <div className="cat-content mx-auto max-w-3xl text-center">
-        <span
-          className="font-mono text-xs tracking-[0.35em]"
-          style={{ color: cat.accent }}
-        >
-          {cat.number}
-        </span>
-
-        <p
-          className="font-body mt-6 text-[11px] uppercase tracking-[0.3em]"
-          style={{ color: "var(--muted)" }}
-        >
-          {cat.subtitle}
-        </p>
-
-        <h3
-          className="font-display mt-3 font-semibold leading-[0.95] tracking-[-0.02em]"
-          style={{ fontSize: "clamp(3.5rem, 10vw, 7rem)" }}
-        >
-          {cat.title}
-        </h3>
-
-        <p
-          className="font-body mx-auto mt-8 max-w-lg text-base leading-relaxed md:text-lg"
-          style={{ color: "var(--muted)" }}
-        >
-          {cat.description}
-        </p>
-
-        <div className="mt-10 flex items-center justify-center gap-4">
-          <span
-            className="font-body text-[10px] uppercase tracking-[0.25em]"
-            style={{ color: cat.accent }}
-          >
-            Coming Soon
-          </span>
-          <span
-            className="h-px w-8"
-            style={{ background: cat.accent, opacity: 0.4 }}
-          />
+    <a
+      href={s.href}
+      className="group flex w-[100px] shrink-0 flex-col items-center gap-3 md:w-[110px]"
+    >
+      <div
+        className="flex h-[88px] w-[88px] items-center justify-center rounded-2xl md:h-[96px] md:w-[96px]"
+        style={{
+          background: s.bg,
+          border: "4px solid #fff",
+          outline: "1.5px solid #1a1a1a",
+          boxShadow: "3px 3px 0 rgba(0,0,0,0.08)",
+        }}
+      >
+        <div ref={iconRef} className="flex items-center justify-center">
+          <CategoryIcon id={s.id} />
         </div>
       </div>
-    </div>
+      <span
+        className="font-play text-center text-[12px] font-medium leading-tight tracking-wide"
+        style={{ color: "var(--ink)" }}
+      >
+        {s.label}
+      </span>
+    </a>
   );
 }
 
 export default function Categories() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const pinRef = useRef<HTMLDivElement>(null);
-  const slidesRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const iconRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  const loop = [...stickers, ...stickers];
+
+  const setIconRef = (id: string, index: number) => (el: HTMLDivElement | null) => {
+    const key = `${id}-${index}`;
+    if (el) iconRefs.current.set(key, el);
+    else iconRefs.current.delete(key);
+  };
 
   useEffect(() => {
-    const section = sectionRef.current;
-    const pin = pinRef.current;
-    const slides = slidesRef.current?.querySelectorAll(".category-slide");
-    if (!section || !pin || !slides?.length) return;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) return;
 
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: "+=400%",
-          pin: pin,
-          scrub: 1.8,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-        },
+    const track = trackRef.current;
+    if (!track) return;
+
+    const animations: gsap.core.Animation[] = [];
+    let marqueeTween: gsap.core.Tween | null = null;
+
+    const startMarquee = () => {
+      if (marqueeTween) marqueeTween.kill();
+      const half = track.scrollWidth / 2;
+      if (half <= 0) return;
+      gsap.set(track, { x: 0 });
+      marqueeTween = gsap.to(track, {
+        x: -half,
+        duration: 22,
+        ease: "none",
+        repeat: -1,
       });
+    };
 
-      const fadeDuration = 1.4;
-      const drift = 16;
+    loop.forEach((s, i) => {
+      const el = iconRefs.current.get(`${s.id}-${i}`);
+      if (!el) return;
+      animations.push(runThematicLoop(el, s.id));
+    });
 
-      // Initial — Puzzles visible, others hidden
-      gsap.set(slides[0], { opacity: 1, y: 0 });
-      gsap.set(slides[1], { opacity: 0, y: drift });
-      gsap.set(slides[2], { opacity: 0, y: drift });
+    const init = () => {
+      requestAnimationFrame(() => requestAnimationFrame(startMarquee));
+    };
+    init();
+    window.addEventListener("resize", init);
 
-      // Puzzles hold, then fades out
-      tl.to(slides[0], { opacity: 0, y: -drift, duration: fadeDuration, ease: "power1.inOut" }, 1.4);
-
-      // Smart Chess emerges
-      tl.to(slides[1], { opacity: 1, y: 0, duration: fadeDuration, ease: "power1.inOut" }, 1.4);
-
-      // Smart Chess hold, then fades out
-      tl.to(slides[1], { opacity: 0, y: -drift, duration: fadeDuration, ease: "power1.inOut" }, 3.6);
-
-      // Intuitive Games emerges
-      tl.to(slides[2], { opacity: 1, y: 0, duration: fadeDuration, ease: "power1.inOut" }, 3.6);
-
-      // Intuitive hold, then fades out → product gallery
-      tl.to(slides[2], { opacity: 0, y: -drift, duration: fadeDuration, ease: "power1.inOut" }, 5.8);
-    }, section);
-
-    return () => ctx.revert();
+    return () => {
+      window.removeEventListener("resize", init);
+      if (marqueeTween) marqueeTween.kill();
+      animations.forEach((a) => a.kill());
+      gsap.set(track, { clearProps: "x" });
+    };
   }, []);
 
   return (
     <section
       id="categories"
-      ref={sectionRef}
-      className="relative"
-      style={{ background: "var(--bg)" }}
+      className="px-5 py-10 md:px-8 md:py-12"
+      style={{
+        background:
+          "linear-gradient(180deg, var(--cream) 0%, #c5d0c0 35%, #8a9e8a 70%, #2f4a3a 100%)",
+      }}
     >
-      <div ref={pinRef} className="relative flex min-h-screen flex-col">
-        {/* Section header — stays at top */}
-        <div className="relative z-20 px-6 pt-24 pb-8">
-          <div className="mx-auto max-w-7xl">
-            <span
-              className="font-body text-[11px] uppercase tracking-[0.3em]"
-              style={{ color: "var(--accent-light)" }}
-            >
-              Our Collection
-            </span>
-            <h2
-              className="font-display mt-3 font-semibold leading-tight tracking-[-0.02em]"
-              style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}
-            >
-              Games that grow
-              <br />
-              <span
-                className="italic"
-                style={{ color: "var(--muted)" }}
-              >
-                with curious minds
-              </span>
-            </h2>
-          </div>
-        </div>
+      <div className="mx-auto max-w-[1200px]">
+        <div className="reki-panel-gradient rounded-xl py-8 md:py-10">
+          <div className="reki-panel-rule-top" aria-hidden />
+          <div className="reki-panel-rule-bottom" aria-hidden />
 
-        {/* Scroll-driven text slides */}
-        <div
-          ref={slidesRef}
-          className="relative flex-1 overflow-hidden"
-          style={{ minHeight: "50vh" }}
-        >
-          {categories.map((cat) => (
-            <CategorySlide key={cat.id} cat={cat} />
-          ))}
-        </div>
+          <p
+            className="font-body mb-6 text-center text-[11px] font-semibold uppercase tracking-[0.28em] md:mb-8"
+            style={{ color: "var(--accent-dark)" }}
+          >
+            Browse by play style
+          </p>
 
-        {/* Progress indicator */}
-        <div className="relative z-20 flex justify-center gap-3 pb-12">
-          {categories.map((cat) => (
+          <div className="overflow-hidden">
             <div
-              key={cat.id}
-              className="h-1 w-8 rounded-full"
-              style={{ background: "var(--border)" }}
-            />
-          ))}
+              ref={trackRef}
+              className="flex w-max items-start gap-10 px-6 md:gap-14 md:px-8"
+              style={{ willChange: "transform" }}
+            >
+              {loop.map((s, i) => (
+                <StickerCard key={`${s.id}-${i}`} s={s} iconRef={setIconRef(s.id, i)} />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>

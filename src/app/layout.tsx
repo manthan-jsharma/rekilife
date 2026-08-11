@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
+import SmoothScroll from "@/components/SmoothScroll";
 import "../styles/globals.css";
 
 export const metadata: Metadata = {
-  title: "reki.life — Play Smarter. Play Together.",
+  title: "reki.life — Wooden Games for Curious Minds",
   description:
-    "Premium physical games for curious minds. Puzzles, smart chess, and intuitive games for kids — powered by intelligent ecommerce.",
+    "Premium physical games for kids — puzzles, smart chess, and intuitive play. Screen-free. Montessori-inspired.",
   openGraph: {
-    title: "reki.life — Play Smarter. Play Together.",
-    description:
-      "Premium physical games for curious minds. Puzzles, smart chess, and intuitive games for kids.",
+    title: "reki.life — Wooden Games for Curious Minds",
+    description: "Premium physical games for kids — puzzles, smart chess, and intuitive play.",
     url: "https://reki.life",
     siteName: "reki.life",
     type: "website",
@@ -22,7 +22,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <SmoothScroll>{children}</SmoothScroll>
+      </body>
     </html>
   );
 }

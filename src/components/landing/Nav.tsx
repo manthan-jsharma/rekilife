@@ -1,76 +1,110 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { useState } from "react";
+import SearchOverlay from "@/components/landing/SearchOverlay";
 
 const links = [
-  { label: "Shop", href: "#products" },
-  { label: "Why Reki", href: "#why" },
-  { label: "Ops", href: "#investigator" },
-  { label: "Waitlist", href: "#waitlist" },
+  { label: "Home", href: "/" },
+  { label: "New Arrivals", href: "/new-arrivals" },
+  { label: "Collections", href: "/#collections" },
+  { label: "Why Reki", href: "/#why" },
+  { label: "Contact", href: "mailto:hello@reki.life" },
 ];
 
 export default function Nav() {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 80);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  const [open, setOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   return (
-    <motion.header
-      initial={{ y: -80, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ delay: 0.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      className="fixed top-0 left-0 right-0 z-50 px-6 py-4"
-      style={{ width: "100%" }}
-    >
-      <nav
-        className="mx-auto flex max-w-7xl items-center justify-between rounded-2xl px-5 py-3 transition-all duration-500"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          width: "100%",
-          maxWidth: "80rem",
-          margin: "0 auto",
-          background: scrolled ? "rgba(10, 10, 15, 0.85)" : "transparent",
-          backdropFilter: scrolled ? "blur(16px)" : "none",
-          border: scrolled ? "1px solid rgba(30, 30, 48, 0.8)" : "1px solid transparent",
-        }}
+    <>
+      <header
+        className="sticky top-0 z-50"
+        style={{ background: "var(--bg)", borderBottom: "1px solid var(--border)" }}
       >
-        <a href="#" className="font-display text-xl font-bold tracking-tight">
-          <span className="text-white">reki</span>
-          <span style={{ color: "var(--accent-light)" }}>.life</span>
-        </a>
+        <nav className="mx-auto flex max-w-[1200px] items-center justify-between gap-4 px-5 py-4 md:px-8">
+          <a
+            href="/"
+            className="reki-nav-logo font-play shrink-0 text-[1.65rem] font-semibold tracking-tight"
+          >
+            <span style={{ color: "#d97757" }}>r</span>
+            <span style={{ color: "#5b8f6e" }}>e</span>
+            <span style={{ color: "var(--accent)" }}>k</span>
+            <span style={{ color: "#c4a35a" }}>i</span>
+            <span style={{ color: "var(--ink)" }}>.life</span>
+          </a>
 
-        <div className="hidden items-center gap-8 md:flex">
-          {links.map(({ label, href }) => (
-            <a
-              key={label}
-              href={href}
-              className="font-body text-sm text-[var(--muted)] transition-colors hover:text-white"
+          <div className="hidden items-center gap-7 md:flex">
+            {links.map(({ label, href }) => (
+              <a key={label} href={href} className="reki-nav-link font-body text-[14px]">
+                {label}
+              </a>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              aria-label="Search products"
+              onClick={() => setSearchOpen(true)}
+              className="reki-nav-icon flex h-9 w-9 items-center justify-center rounded-full"
+              style={{ color: "var(--ink)" }}
             >
-              {label}
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                <circle cx="11" cy="11" r="7" />
+                <path d="M20 20l-3.5-3.5" strokeLinecap="round" />
+              </svg>
+            </button>
+            <a
+              href="/#collections"
+              aria-label="Cart"
+              className="reki-nav-icon flex h-9 w-9 items-center justify-center rounded-full"
+              style={{ color: "var(--ink)" }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                <path d="M6 7h15l-1.5 9h-12z" strokeLinejoin="round" />
+                <path d="M6 7L5 3H2" strokeLinecap="round" />
+                <circle cx="9" cy="20" r="1.2" fill="currentColor" />
+                <circle cx="17" cy="20" r="1.2" fill="currentColor" />
+              </svg>
             </a>
-          ))}
-        </div>
+            <button
+              type="button"
+              aria-label="Menu"
+              className="reki-nav-icon flex h-9 w-9 items-center justify-center rounded-full md:hidden"
+              onClick={() => setOpen((v) => !v)}
+            >
+              {open ? "×" : "☰"}
+            </button>
+          </div>
+        </nav>
 
-        <a
-          href="#waitlist"
-          className="font-body rounded-full text-sm font-medium transition-all hover:scale-105"
-          style={{
-            background: "var(--accent)",
-            color: "#fff",
-            padding: "8px 20px",
-            flexShrink: 0,
-          }}
-        >
-          Join Waitlist
-        </a>
-      </nav>
-    </motion.header>
+        {open && (
+          <div className="flex flex-col gap-1 px-5 pb-4 md:hidden" style={{ borderTop: "1px solid var(--border)" }}>
+            <button
+              type="button"
+              className="reki-nav-mobile font-body py-3 text-left text-sm"
+              onClick={() => {
+                setOpen(false);
+                setSearchOpen(true);
+              }}
+            >
+              Search
+            </button>
+            {links.map(({ label, href }) => (
+              <a
+                key={label}
+                href={href}
+                className="reki-nav-mobile font-body py-3 text-sm"
+                onClick={() => setOpen(false)}
+              >
+                {label}
+              </a>
+            ))}
+          </div>
+        )}
+      </header>
+
+      <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
+    </>
   );
 }

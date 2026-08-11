@@ -1,143 +1,151 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function WaitlistCTA() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const section = sectionRef.current;
-    const content = contentRef.current;
-    if (!section || !content) return;
-
-    const ctx = gsap.context(() => {
-      gsap.from(content.children, {
-        y: 40,
-        opacity: 0,
-        stagger: 0.1,
-        duration: 0.7,
-        ease: "power3.out",
-        immediateRender: false,
-        scrollTrigger: {
-          trigger: section,
-          start: "top 80%",
-          once: true,
-        },
-      });
-    }, section);
-
-    return () => ctx.revert();
-  }, []);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email.trim()) setSubmitted(true);
-  };
+  const [focused, setFocused] = useState(false);
 
   return (
     <section
       id="waitlist"
-      ref={sectionRef}
-      className="grain relative px-6 py-32"
+      className="relative overflow-hidden px-5 py-16 md:px-8 md:py-24"
       style={{ background: "var(--cream)" }}
     >
       <div
-        ref={contentRef}
-        className="relative z-10 mx-auto max-w-2xl text-center"
+        className="pointer-events-none absolute left-1/2 top-0 h-[280px] w-[520px] -translate-x-1/2 rounded-full blur-3xl"
+        style={{ background: "rgba(185,119,44,0.12)" }}
+      />
+
+      <motion.div
+        className="relative mx-auto max-w-xl text-center"
+        initial={{ opacity: 0, y: 28 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.45 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
-        <span
-          className="font-body text-[11px] uppercase tracking-[0.25em]"
-          style={{ color: "var(--coral)" }}
+        <motion.p
+          className="font-body text-[11px] font-semibold uppercase tracking-[0.28em]"
+          style={{ color: "var(--accent-dark)" }}
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.1, duration: 0.5 }}
         >
-          Early Access
-        </span>
+          The atelier letter
+        </motion.p>
 
-        <h2
-          className="font-display mt-3 text-[clamp(2rem,5vw,3.5rem)] font-bold leading-tight tracking-tight"
-          style={{ color: "#1a1a2e" }}
+        <motion.h2
+          className="font-display mt-4 font-semibold leading-tight"
+          style={{ color: "var(--ink)", fontSize: "clamp(2rem, 4vw, 2.85rem)" }}
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.18, duration: 0.55 }}
         >
-          Be the first to play
-        </h2>
+          Stay in the{" "}
+          <span className="italic" style={{ color: "var(--accent-dark)" }}>
+            atelier
+          </span>
+        </motion.h2>
 
-        <p
-          className="font-body mx-auto mt-4 max-w-md text-base leading-relaxed"
-          style={{ color: "#888" }}
+        <motion.p
+          className="font-body mx-auto mt-4 max-w-md text-[15px] leading-relaxed md:text-base"
+          style={{ color: "#4a453c" }}
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.26, duration: 0.55 }}
         >
-          Join the waitlist for exclusive launch pricing, early product access,
-          and updates on new games.
-        </p>
+          Early drops, quiet tips for screen-free evenings — no spam, just wood
+          and play.
+        </motion.p>
 
-        {!submitted ? (
-          <form
-            onSubmit={handleSubmit}
-            className="mx-auto mt-10 flex max-w-md flex-col gap-3 sm:flex-row"
-          >
-            <input
-              type="email"
-              required
-              placeholder="you@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="font-body flex-1 rounded-full text-sm outline-none transition-all focus:ring-2"
+        <motion.div
+          className="mx-auto mt-8 h-px origin-center"
+          style={{
+            background:
+              "linear-gradient(90deg, transparent, var(--accent), transparent)",
+          }}
+          initial={{ scaleX: 0, opacity: 0 }}
+          whileInView={{ scaleX: 1, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.35, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        />
+
+        <AnimatePresence mode="wait">
+          {!submitted ? (
+            <motion.form
+              key="form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (email.trim()) setSubmitted(true);
+              }}
+              className="mx-auto mt-8 flex max-w-md overflow-hidden"
               style={{
                 background: "#fff",
-                border: "1px solid #e0dcd4",
-                color: "#1a1a2e",
-                padding: "14px 24px",
+                border: `1.5px solid ${focused ? "var(--accent)" : "rgba(26,26,26,0.22)"}`,
+                boxShadow: focused
+                  ? "0 12px 36px rgba(185,119,44,0.14)"
+                  : "0 8px 28px rgba(26,26,26,0.05)",
+                transition: "border-color 250ms ease, box-shadow 250ms ease",
               }}
-            />
-            <motion.button
-              type="submit"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="font-body rounded-full text-sm font-semibold whitespace-nowrap"
-              style={{
-                background: "var(--accent)",
-                color: "#fff",
-                boxShadow: "0 4px 20px rgba(108,99,255,0.3)",
-                padding: "14px 32px",
-              }}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ delay: 0.42, duration: 0.55 }}
             >
-              Get Early Access
-            </motion.button>
-          </form>
-        ) : (
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="mt-10 inline-flex items-center gap-3 rounded-2xl px-8 py-5"
-            style={{
-              background: "rgba(123,174,127,0.12)",
-              border: "1px solid rgba(123,174,127,0.3)",
-            }}
-          >
-            <span className="text-2xl">✓</span>
-            <div className="text-left">
-              <p
-                className="font-display font-bold"
-                style={{ color: "#1a1a2e" }}
+              <input
+                type="email"
+                required
+                placeholder="your@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onFocus={() => setFocused(true)}
+                onBlur={() => setFocused(false)}
+                className="font-body flex-1 px-5 py-3.5 text-[15px] outline-none placeholder:text-[#9a8f7c] focus:placeholder:text-[#c4b59a]"
+                style={{
+                  background: "transparent",
+                  color: "var(--ink)",
+                }}
+              />
+              <motion.button
+                type="submit"
+                aria-label="Subscribe"
+                className="reki-btn-primary reki-btn-tab font-body flex items-center gap-2 px-5 py-3.5 text-sm font-semibold uppercase tracking-wide"
+                whileTap={{ scale: 0.97 }}
+                transition={{ duration: 0.15 }}
               >
-                You&apos;re on the list!
+                Join
+                <span aria-hidden className="text-base leading-none">
+                  →
+                </span>
+              </motion.button>
+            </motion.form>
+          ) : (
+            <motion.div
+              key="success"
+              className="mt-8"
+              initial={{ opacity: 0, y: 12, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <p
+                className="font-display text-2xl font-semibold italic"
+                style={{ color: "var(--accent-dark)" }}
+              >
+                You&apos;re in.
               </p>
-              <p className="font-body text-sm" style={{ color: "#888" }}>
-                We&apos;ll notify you when we launch.
+              <p className="font-body mt-2 text-sm" style={{ color: "#4a453c" }}>
+                We&apos;ll write when something worth opening arrives.
               </p>
-            </div>
-          </motion.div>
-        )}
-
-        <p className="font-body mt-6 text-xs" style={{ color: "#bbb" }}>
-          No spam. Unsubscribe anytime.
-        </p>
-      </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
     </section>
   );
 }
