@@ -22,6 +22,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link
+          rel="preload"
+          href="/illustrations/wooden-adult-hand.png"
+          as="image"
+          type="image/png"
+        />
+      </head>
       <body>
         <SmoothScroll>{children}</SmoothScroll>
       </body>
