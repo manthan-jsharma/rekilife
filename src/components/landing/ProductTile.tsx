@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import OptimizedImage from "@/components/landing/OptimizedImage";
 import { CHECKOUT_URL, type Product } from "@/lib/products";
 
 type Props = {
@@ -31,11 +31,12 @@ export default function ProductTile({ product, variant = "default" }: Props) {
             {product.badge}
           </span>
         )}
-        <Image
+        <OptimizedImage
           src={product.image}
           alt={product.name}
           fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 320px"
+          loading="lazy"
           className="object-cover"
         />
       </div>

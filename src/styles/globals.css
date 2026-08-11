@@ -526,6 +526,90 @@ body {
   border-radius: 3px;
 }
 
+/* Wooden hand line placeholder — draws in while PNG loads */
+@keyframes wooden-hand-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes wooden-hand-breathe {
+  0%,
+  100% {
+    opacity: 0.72;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.wooden-hand-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation:
+    wooden-hand-draw 2.2s cubic-bezier(0.22, 1, 0.36, 1) forwards,
+    wooden-hand-breathe 2.8s ease-in-out 2.2s infinite;
+}
+
+.wooden-hand-line-static {
+  stroke-dasharray: none;
+  stroke-dashoffset: 0;
+  opacity: 0.9;
+}
+
+.wooden-hand-line-delay-1 {
+  animation-delay: 0.12s, 2.32s;
+}
+.wooden-hand-line-delay-2 {
+  animation-delay: 0.24s, 2.44s;
+}
+.wooden-hand-line-delay-3 {
+  animation-delay: 0.36s, 2.56s;
+}
+.wooden-hand-line-delay-4 {
+  animation-delay: 0.48s, 2.68s;
+}
+.wooden-hand-line-delay-5 {
+  animation-delay: 0.6s, 2.8s;
+}
+.wooden-hand-line-delay-6 {
+  animation-delay: 0.72s, 2.92s;
+}
+.wooden-hand-line-delay-7 {
+  animation-delay: 0.84s, 3.04s;
+}
+.wooden-hand-line-delay-8 {
+  animation-delay: 0.96s, 3.16s;
+}
+
+.wooden-hand-glow {
+  animation: wooden-hand-breathe 3s ease-in-out infinite;
+}
+
+/* Wood-tone shimmer while next/image optimizes on Vercel */
+@keyframes reki-image-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.reki-image-shimmer {
+  background: linear-gradient(
+    110deg,
+    #f5f0e6 0%,
+    #efe4d4 22%,
+    #e7c99a 45%,
+    #f5f0e6 55%,
+    #efe4d4 78%,
+    #f5f0e6 100%
+  );
+  background-size: 200% 100%;
+  animation: reki-image-shimmer 2.2s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -533,6 +617,15 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .wooden-hand-line,
+  .wooden-hand-glow,
+  .reki-image-shimmer {
+    animation: none !important;
+    stroke-dashoffset: 0;
+    opacity: 0.9;
+    background: #f5f0e6;
   }
 
   /* Keep navbar hover readable even with reduced motion */

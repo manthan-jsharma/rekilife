@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import WoodenHand from "./WoodenHand";
+import OptimizedImage from "./OptimizedImage";
 
 /**
- * Hero story slides — swap `image` later for lifestyle/kids photos.
- * Image sits in a full-column wavy ribbon / capsule (waves top + bottom).
+ * Hero story slides — lifestyle photos in the wavy ribbon frame.
  */
 const slides = [
   {
@@ -14,7 +13,7 @@ const slides = [
     title: "In a world of screens,",
     accent: "we choose wood.",
     body: "Premium puzzles, smart chess, and intuitive games for little hands and big dreams.",
-    image: "/products/memory-match.png",
+    image: "/hero/hero-slide-1-memory.png",
     caption: "Memory Match · ₹499",
   },
   {
@@ -22,7 +21,7 @@ const slides = [
     title: "Minds open.",
     accent: "No batteries required.",
     body: "Tactile games that build focus, memory, and imagination — the quiet kind of joy.",
-    image: "/products/memory-match.png",
+    image: "/hero/hero-slide-2-blocks.png",
     caption: "Screen-free evenings",
   },
   {
@@ -30,7 +29,7 @@ const slides = [
     title: "Not disposable toys.",
     accent: "Heirlooms of play.",
     body: "Solid materials, thoughtful finishes, and games designed to grow with your child.",
-    image: "/products/memory-match.png",
+    image: "/hero/hero-slide-3-chess.png",
     caption: "Crafted to last",
   },
   {
@@ -38,7 +37,7 @@ const slides = [
     title: "Play smarter.",
     accent: "Play together.",
     body: "Montessori-inspired physical games that turn every evening into discovery.",
-    image: "/products/memory-match.png",
+    image: "/hero/hero-slide-4-together.png",
     caption: "Play together",
   },
 ];
@@ -211,19 +210,20 @@ export default function Hero() {
             >
               {slides.map((s, i) => (
                 <div
-                  key={s.caption + i}
+                  key={s.image}
                   className="absolute inset-0"
                   style={{
                     transform: `translateX(${(index - i) * 100}%)`,
                     transition: "transform 650ms cubic-bezier(0.4, 0, 0.2, 1)",
                   }}
                 >
-                  <Image
+                  <OptimizedImage
                     src={s.image}
                     alt={s.caption}
                     fill
                     priority={i === 0}
-                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    loading={i <= 1 ? "eager" : "lazy"}
+                    sizes="(max-width: 1024px) 100vw, 1200px"
                     className="object-cover"
                   />
                 </div>

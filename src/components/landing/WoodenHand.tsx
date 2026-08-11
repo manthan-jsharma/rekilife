@@ -1,11 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
+import WoodenHandLines from "./WoodenHandLines";
 
-/** Desktop wooden hand — no wrist extension, larger, near navbar. */
+/** Desktop wooden hand — line placeholder until optimized PNG loads. */
 export default function WoodenHand() {
   const reduce = useReducedMotion();
+  const [loaded, setLoaded] = useState(false);
 
   return (
     <motion.div
@@ -41,13 +44,24 @@ export default function WoodenHand() {
               "radial-gradient(ellipse at center, rgba(92,58,18,0.35) 0%, rgba(92,58,18,0.12) 45%, transparent 72%)",
           }}
         />
+
+        <div
+          className="absolute inset-0 object-contain object-right transition-opacity duration-700 ease-out"
+          style={{ opacity: loaded ? 0 : 1 }}
+        >
+          <WoodenHandLines className="h-full w-full object-contain object-right" />
+        </div>
+
         <Image
           src="/illustrations/wooden-adult-hand.png"
           alt=""
           fill
-          sizes="400px"
-          unoptimized
-          className="relative object-contain object-right drop-shadow-[0_10px_24px_rgba(92,58,18,0.18)]"
+          sizes="(max-width: 1280px) 340px, 400px"
+          priority
+          className={`relative object-contain object-right drop-shadow-[0_10px_24px_rgba(92,58,18,0.18)] transition-opacity duration-700 ease-out ${
+            loaded ? "opacity-100" : "opacity-0"
+          }`}
+          onLoad={() => setLoaded(true)}
         />
       </div>
     </motion.div>
